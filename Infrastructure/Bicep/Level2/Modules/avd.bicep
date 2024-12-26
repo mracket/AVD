@@ -1,5 +1,6 @@
 param location string
 param name string
+param tags object
 
 @allowed([
   'Pooled'
@@ -27,6 +28,7 @@ resource hostpool 'Microsoft.DesktopVirtualization/hostPools@2024-08-08-preview'
     loadBalancerType: loadBalancerType
     preferredAppGroupType: preferredAppGroupType
   }
+  tags: tags
 }
 
 resource workspace 'Microsoft.DesktopVirtualization/workspaces@2024-08-08-preview' = {
@@ -40,6 +42,7 @@ resource workspace 'Microsoft.DesktopVirtualization/workspaces@2024-08-08-previe
     ]
     description: '${name} Workspace' 
   }
+  tags: tags
 }
 
 resource desktop_dag 'Microsoft.DesktopVirtualization/applicationGroups@2024-08-08-preview' = {
@@ -50,6 +53,7 @@ resource desktop_dag 'Microsoft.DesktopVirtualization/applicationGroups@2024-08-
     applicationGroupType: 'Desktop'
     hostPoolArmPath: resourceId('Microsoft.DesktopVirtualization/hostpools', hostpool.name)
   }
+  tags: tags
 }
 
 resource remote_app_dag 'Microsoft.DesktopVirtualization/applicationGroups@2024-08-08-preview' = {
@@ -60,4 +64,5 @@ resource remote_app_dag 'Microsoft.DesktopVirtualization/applicationGroups@2024-
     applicationGroupType: 'RemoteApp'
     hostPoolArmPath: resourceId('Microsoft.DesktopVirtualization/hostpools', hostpool.name)
   }
+  tags: tags
 }
