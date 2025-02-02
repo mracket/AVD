@@ -1,8 +1,4 @@
-param name string
-param location string
-param tags object
 param fileshare_name string = 'profiles'
-
 @allowed([
   'BlobStorage'
   'BlockBlobStorage'
@@ -11,7 +7,9 @@ param fileshare_name string = 'profiles'
   'StorageV2'
 ])
 param kind string = 'FileStorage'
-
+param location string
+param name string
+param tags object
 @allowed([
   'Standard_LRS'
   'Standard_GRS'
@@ -26,9 +24,9 @@ resource stg 'Microsoft.Storage/storageAccounts@2023-05-01' = {
   location: location
   kind: kind
   properties: {
-    supportsHttpsTrafficOnly: true
+    allowBlobPublicAccess: false  
     minimumTlsVersion: 'TLS1_2'
-    allowBlobPublicAccess: false    
+    supportsHttpsTrafficOnly: true      
   }  
   sku: {
     name: sku
@@ -42,9 +40,7 @@ resource file 'Microsoft.Storage/storageAccounts/fileServices@2023-05-01' = {
     protocolSettings: {
       smb: {}
     }
-
   }
-
 }
 
 resource fileshare 'Microsoft.Storage/storageAccounts/fileServices/shares@2023-05-01' = {
