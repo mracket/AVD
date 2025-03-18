@@ -1,9 +1,8 @@
-
-param compute_gallery_name string 
-param image_name string 
-param location string
-param managed_identity_name string  
-param managed_identity_resource_group_name string 
+param compute_gallery_name string = 'gal_cloudninja_production'
+param image_name string = 'AVD-Image-13022025-8'
+param location string = 'WestEurope'
+param managed_identity_name string = 'mi-github-cloudninja-avd'
+param managed_identity_resource_group_name string = 'rg-avd-tfstate-p'
 
 resource compute_gallery_lookup 'Microsoft.Compute/galleries@2024-03-03' existing = {
   name: compute_gallery_name
@@ -12,18 +11,24 @@ resource compute_gallery_lookup 'Microsoft.Compute/galleries@2024-03-03' existin
 resource compute_gallery_image_definition 'Microsoft.Compute/galleries/images@2024-03-03' = {
   parent: compute_gallery_lookup
   name: image_name
-  location: location
+  location: location  
   properties: {
     description: 'Used for ${image_name}'
     identifier: {
       sku: 'win11-24h2-${image_name}'
       offer: 'office-365'
-      publisher: 'microsoftwindowsdesktop'
+      publisher: 'microsoftwindowsdesktop'            
     }
     osState: 'Generalized'
     osType: 'Windows'
     endOfLifeDate: '2099-01-01'
     hyperVGeneration: 'V2'
+    features: [
+      {
+        name: 'SecurityType'
+        value: 'TrustedLaunchSupported'
+      }
+    ]
   }
 }
 
@@ -44,7 +49,7 @@ resource image_template 'Microsoft.VirtualMachineImages/imageTemplates@2024-02-0
       '${managed_identity.id}': {}
     }
   }
-  properties: {
+  properties: {    
     buildTimeoutInMinutes: 240
     customize: [
       {
@@ -132,7 +137,8 @@ resource image_template 'Microsoft.VirtualMachineImages/imageTemplates@2024-02-0
     }
     vmProfile: {
       osDiskSizeGB: 127
-      vmSize: 'Standard_D8s_v3'
+      vmSize: 'Standard_D8s_v3'      
     }
+    
   }
 }
