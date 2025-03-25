@@ -4,22 +4,22 @@ param availabilityset_name string = 'avail-level4'
 param compute_gallery_image_name string = 'w11_multiuser_packer'
 param domain string = 'cloudninja.nu'
 param domain_join_username string = 'svc_domainjoin@cloudninja.nu'
-param host_pool_name string = 'level4'
-param local_admin_username string = 'localadmin'
-param ou_path string = 'OU=Demo,OU=AVD,OU=Cloudninja,DC=cloudninja,DC=nu'
+
 @allowed([
   'Production'
   'Test'
 ])
 param environment string = 'Production'
+param host_pool_name string = 'level4'
+param local_admin_username string = 'localadmin'
 param key_vault_name string = 'kv-level4'
 param key_vault_resource_group_name string = 'rg-level4-shared-services'
 param key_vault_subscription_id string = 'f3b45d0c-2db9-498e-b885-9176d11d690c'
 param location string = 'WestEurope'
 param name string = 'level4'
+param ou_path string = 'OU=Demo,OU=AVD,OU=Cloudninja,DC=cloudninja,DC=nu'
 param session_hosts_count int = 1
 param subnet_name string = 'snet-avd-cloudninja-p'
-
 param tags object = {
   Owner: 'Martin'
   Environment: environment

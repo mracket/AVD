@@ -30,19 +30,4 @@ resource rbac 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   }
   scope: kv
 }
-/*
-resource secret_domain_join_password 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
-  parent: kv
-  name: 'domain-join-password'
-  properties: {
-    value: 'P@ssw0rd1234' // Change this in the portal after deployment
-  }
-}
-resource secret_local_admin_password 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
-  parent: kv
-  name: 'local-admin-password'
-  properties: {
-    value: 'P@ssw0rd1234' // Change this in the portal after deployment
-  }
-}
-*/
+

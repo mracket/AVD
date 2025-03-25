@@ -30,12 +30,6 @@ param ou_path string
 param securityType string = 'TrustedLaunch'
 param vm_size string = 'Standard_D2s_v5'
 
-param compute_gallery_name string = 'gal_avd'
-param compute_gallery_image_name string
-param compute_gallery_resource_group string = 'rg-avd-sharedservices-p'
-param compute_gallery_subscription_id string = 'f3b45d0c-2db9-498e-b885-9176d11d690c'
-param use_compute_gallery bool = true
-
 resource vnet 'Microsoft.Network/virtualNetworks@2024-05-01' existing = {
   name: virtual_network_name 
   scope: resourceGroup(virtual_network_resource_group_name)
@@ -53,15 +47,6 @@ module availabilityset 'availabilityset.bicep' = {
   }
 }
 
-resource gallery 'Microsoft.Compute/galleries@2024-03-03' existing = if(use_compute_gallery) {
-  name: compute_gallery_name
-  scope: resourceGroup(compute_gallery_subscription_id, compute_gallery_resource_group)
-}
-
-resource galleryimage 'Microsoft.Compute/galleries/images@2024-03-03' existing = if(use_compute_gallery){
-  name: compute_gallery_image_name
-  parent: gallery
-}
 
 resource nic 'Microsoft.Network/networkInterfaces@2024-05-01' = [for i in range(0, session_hosts_count): {
   name: 'nic-${vm_prefix}-${i + 1}'
@@ -103,9 +88,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = [for i in range(0, 
       adminPassword: local_admin_password
     }
     storageProfile: {
-      imageReference: (use_compute_gallery) ? {
-        id: galleryimage.id        
-      } : {
+      imageReference: {
         publisher: 'MicrosoftWindowsDesktop'
         offer: 'office-365'
         sku: '24h2-avd'
