@@ -15,6 +15,8 @@ param domain_type string = 'EntraID'
 param domain_guid string = 'd86cfa45-fb62-496f-8955-1ae7bcb4e0d8'
 param domain_name string = 'cloudninja.nu'
 
+param entra_group_id string = '2e822894-7b05-4c0a-9698-1c04ea8ec1cc' // ACC_AVD_Users
+
 resource rg_hostpool 'Microsoft.Resources/resourceGroups@2024-07-01' = {
   name: 'rg-${name}'
   location: location
@@ -34,6 +36,7 @@ module avd_hostpool 'Modules/avd_hostpool.bicep' = {
     location: location
     name: name    
     tags: tags
+    vm_login_principal_id: entra_group_id
   }
 }
 

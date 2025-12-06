@@ -14,6 +14,11 @@ param subnet_name string
 param virtual_network_name string
 param virtual_network_resource_group_name string
 
+param custom_image_name string = ''
+param custom_image_resource_group_name string = ''
+param custom_image_version string = ''
+param custom_image_galery_name string = ''
+
 param local_admin_username string
 @secure()
 param local_admin_password string
@@ -43,6 +48,21 @@ resource vnet 'Microsoft.Network/virtualNetworks@2024-05-01' existing = {
 resource subnet 'Microsoft.Network/virtualNetworks/subnets@2024-05-01' existing = {
   name: subnet_name
   parent: vnet
+}
+
+resource customImageGallery 'Microsoft.Compute/galleries@2024-03-03' existing = if (custom_image_galery_name != '') {
+  name: custom_image_galery_name
+  scope: resourceGroup(custom_image_resource_group_name)
+}
+
+resource customImage 'Microsoft.Compute/galleries/images@2024-03-03' existing = if (custom_image_galery_name != '' && custom_image_name != '') {
+  name: custom_image_name
+  parent: customImageGallery
+}
+
+resource customSigImageVersion 'Microsoft.Compute/galleries/images/versions@2024-03-03' existing = if (custom_image_galery_name != '' && custom_image_name != '' && custom_image_version != '') {
+  name: custom_image_version
+  parent: customImage
 }
 
 module availabilityset 'availabilityset.bicep' = {
@@ -97,7 +117,9 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = [for i in range(0, 
       adminPassword: local_admin_password
     }
     storageProfile: {
-      imageReference: {
+      imageReference: (customSigImageVersion.id != null) ? {
+        id: customSigImageVersion.id
+      } : {
         publisher: 'MicrosoftWindowsDesktop'
         offer: 'office-365'
         sku: 'win11-25h2-avd-m365'

@@ -45,6 +45,9 @@ module avd_session_hosts 'Modules/avd_session_host.bicep' = {
     tags: tags
     subnet_name: subnet_name
     availabilityset_name: availabilityset_name
+    custom_image_galery_name: 'gal_avd'
+    custom_image_name: 'w11_multiuser_packer'
+    custom_image_resource_group_name: 'rg-avd-sharedservices-p'
     domain: domain
     domain_join_username: (domain_type == 'EntraID') ? '' : domain_join_username
     domain_join_password: (domain_type == 'EntraID') ? '' : kv.getSecret('domain-join-password')

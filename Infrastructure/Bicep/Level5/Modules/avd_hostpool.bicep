@@ -16,6 +16,8 @@ param name string
   'RemoteApp'
 ])
 param preferredAppGroupType string = 'Desktop'
+param vm_login_principal_id string = '' 
+param vm_login_principal_type string = 'Group'
 param tags object
 param baseTime string = utcNow('u')
 var add1Days = dateTimeAdd(baseTime, 'P1D')
@@ -57,6 +59,18 @@ resource remote_app_dag 'Microsoft.DesktopVirtualization/applicationGroups@2024-
   }
   tags: tags
 }
+
+resource vmUserLoginAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (vm_login_principal_id != '') {
+  name: guid(resourceGroup().id, vm_login_principal_id, 'vm-user-login')
+  scope: resourceGroup()
+  properties: {
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'fb879df8-f326-4884-b1cf-06f3ad86be52')
+    principalId: vm_login_principal_id
+    principalType: vm_login_principal_type
+  }
+}
+
+
 
 output desktop_dag string = resourceId('Microsoft.DesktopVirtualization/applicationGroups', desktop_dag.name)
 output remote_app_dag string = resourceId('Microsoft.DesktopVirtualization/applicationGroups', remote_app_dag.name)
