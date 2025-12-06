@@ -45,7 +45,7 @@ resource workspace 'Microsoft.DesktopVirtualization/workspaces@2024-08-08-previe
   tags: tags
 }
 
-resource stg 'Microsoft.Storage/storageAccounts@2025-06-01' = {
+resource stg 'Microsoft.Storage/storageAccounts@2025-06-01' =  if (create_storage_account) {
   name: 'sa${name}${uniqueString(resourceGroup().id)}'
   location: location
   kind: kind
@@ -67,7 +67,7 @@ resource stg 'Microsoft.Storage/storageAccounts@2025-06-01' = {
   }
   tags: tags
 }
-resource file 'Microsoft.Storage/storageAccounts/fileServices@2025-06-01' = {
+resource file 'Microsoft.Storage/storageAccounts/fileServices@2025-06-01' =  if (create_storage_account) {
   name: 'default'
   parent: stg
   properties: {
@@ -77,7 +77,7 @@ resource file 'Microsoft.Storage/storageAccounts/fileServices@2025-06-01' = {
   }
 }
 
-resource fileshare 'Microsoft.Storage/storageAccounts/fileServices/shares@2025-06-01' = {
+resource fileshare 'Microsoft.Storage/storageAccounts/fileServices/shares@2025-06-01' = if (create_storage_account) {
   name: fileshare_name
   parent: file
   properties: {
