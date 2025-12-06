@@ -38,7 +38,7 @@ resource kv 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
   scope: resourceGroup(key_vault_subscription_id,key_vault_resource_group_name)
 }
 
-module avd_session_hosts 'br:acrcloudninjalevel6.azurecr.io/avd_session_host:20251206' = {
+module avd_session_hosts 'br:acrcloudninjalevel6.azurecr.io/avd_session_host:2025-12-06' = {
   name: 'avd_session_hosts'
   scope: rg_hostpool
   params: {
