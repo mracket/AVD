@@ -9,6 +9,5 @@ foreach ($Module in $Modules) {
     # Publish with timestamped tag
     Write-Host "Publishing $ModuleName with tag $Timestamp..."
     az bicep publish --file $FilePath --target "br:${Registry}.azurecr.io/${ModuleName}:${Timestamp}" 
-
 }
 

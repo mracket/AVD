@@ -22,7 +22,7 @@ param tags object
 param baseTime string = utcNow('u')
 var add1Days = dateTimeAdd(baseTime, 'P1D')
 
-resource hostpool 'Microsoft.DesktopVirtualization/hostPools@2024-08-08-preview' = {
+resource hostpool 'Microsoft.DesktopVirtualization/hostPools@2025-04-01-preview' = {
   name: 'vdpool-${name}'
   location: location
   properties: {
@@ -33,12 +33,12 @@ resource hostpool 'Microsoft.DesktopVirtualization/hostPools@2024-08-08-preview'
       expirationTime: add1Days
       registrationTokenOperation: 'Update'
     }
-    customRdpProperty: 'targetisaadjoined:i:1;enablerdsaadauth:i:1;smart sizing:i:1;dynamic resolution:i:1'
+    customRdpProperty: 'targetisaadjoined:i:1;enablerdsaadauth:i:1;smart sizing:i:1;dynamic resolution:i:1'    
   }
   tags: tags
 }
 
-resource desktop_dag 'Microsoft.DesktopVirtualization/applicationGroups@2024-08-08-preview' = {
+resource desktop_dag 'Microsoft.DesktopVirtualization/applicationGroups@2025-04-01-preview' = {
   name: 'vdag-${name}-desktop'
   location: location
   properties: {
@@ -49,7 +49,7 @@ resource desktop_dag 'Microsoft.DesktopVirtualization/applicationGroups@2024-08-
   tags: tags
 }
 
-resource remote_app_dag 'Microsoft.DesktopVirtualization/applicationGroups@2024-08-08-preview' = {
+resource remote_app_dag 'Microsoft.DesktopVirtualization/applicationGroups@2025-04-01-preview' = {
   name: 'vdag-${name}-remoteapp'
   location: location
   properties: {

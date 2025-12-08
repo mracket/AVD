@@ -31,7 +31,7 @@ param domain_name string = ''
 
 param principalId string = 'bf92430d-f01e-46ea-8fef-092a87a81e97'
 
-resource workspace 'Microsoft.DesktopVirtualization/workspaces@2024-08-08-preview' = {
+resource workspace 'Microsoft.DesktopVirtualization/workspaces@2025-04-01-preview' = {
   name: 'vdws-${name}'
   location: location
   properties: {
@@ -85,7 +85,7 @@ resource fileshare 'Microsoft.Storage/storageAccounts/fileServices/shares@2025-0
   }
 }
 
-resource kv 'Microsoft.KeyVault/vaults@2023-07-01' = if (create_key_vault) {
+resource kv 'Microsoft.KeyVault/vaults@2025-05-01' = if (create_key_vault) {
   name: 'kv-${name}'
   location: location
   properties: {

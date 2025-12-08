@@ -29,7 +29,7 @@ resource rg_shared_services 'Microsoft.Resources/resourceGroups@2024-07-01' = {
   tags: tags
 }
 
-module avd_hostpool 'br:acrcloudninjalevel6.azurecr.io/avd_hostpool:2025-12-06' = {
+module avd_hostpool 'br:acrcloudninjalevel6.azurecr.io/avd_hostpool:2025-12-07' = {
   name: 'avd_hostpool'
   scope: rg_hostpool
   params: {
@@ -40,7 +40,7 @@ module avd_hostpool 'br:acrcloudninjalevel6.azurecr.io/avd_hostpool:2025-12-06' 
   }
 }
 
-module avd_shared_services 'br:acrcloudninjalevel6.azurecr.io/avd_shared_services:2025-12-06' = {
+module avd_shared_services 'br:acrcloudninjalevel6.azurecr.io/avd_shared_services:2025-12-07' = {
   name: 'avd_shared_services'
   scope: rg_shared_services
   params: {

@@ -1,7 +1,9 @@
-
+@minLength(3)
+param name string = 'level6'
+param project string = 'AVD'
 
 resource cr 'Microsoft.ContainerRegistry/registries@2025-11-01' = {
-  name: 'acrcloudninjalevel6'
+  name: 'acr${name}'
   location: resourceGroup().location
   sku: {
     name: 'Standard'
@@ -18,8 +20,8 @@ resource cr 'Microsoft.ContainerRegistry/registries@2025-11-01' = {
     }
   }
   tags: {
-    environment: 'Level6'
-    project: 'AVD'
+    environment: name
+    project: project
   }
 }
 

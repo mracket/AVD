@@ -41,11 +41,11 @@ param securityType string = 'TrustedLaunch'
 param vm_size string = 'Standard_D2s_v5'
 param data_collection_rule_id string = '/subscriptions/f3b45d0c-2db9-498e-b885-9176d11d690c/resourcegroups/rg-avd-demo/providers/microsoft.insights/datacollectionrules/microsoft-avdi-westeurope-avd-demo-0-2025-10-28t06-13-46-00'
 
-resource vnet 'Microsoft.Network/virtualNetworks@2024-05-01' existing = {
+resource vnet 'Microsoft.Network/virtualNetworks@2025-01-01' existing = {
   name: virtual_network_name 
   scope: resourceGroup(virtual_network_resource_group_name)
 }
-resource subnet 'Microsoft.Network/virtualNetworks/subnets@2024-05-01' existing = {
+resource subnet 'Microsoft.Network/virtualNetworks/subnets@2025-01-01' existing = {
   name: subnet_name
   parent: vnet
 }
@@ -74,7 +74,7 @@ module availabilityset 'availabilityset.bicep' = {
 }
 
 
-resource nic 'Microsoft.Network/networkInterfaces@2024-05-01' = [for i in range(0, session_hosts_count): {
+resource nic 'Microsoft.Network/networkInterfaces@2025-01-01' = [for i in range(0, session_hosts_count): {
   name: 'nic-${vm_prefix}-${i + 1}'
   location: location
   tags: tags
@@ -93,7 +93,7 @@ resource nic 'Microsoft.Network/networkInterfaces@2024-05-01' = [for i in range(
   }  
 }]
 
-resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = [for i in range(0, session_hosts_count): {
+resource vm 'Microsoft.Compute/virtualMachines@2025-04-01' = [for i in range(0, session_hosts_count): {
   dependsOn:[
     nic[i]
   ]
@@ -149,7 +149,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = [for i in range(0, 
   }
 }]
 
-resource domainjoin 'Microsoft.Compute/virtualMachines/extensions@2024-07-01' = [for i in range(0, session_hosts_count): {
+resource domainjoin 'Microsoft.Compute/virtualMachines/extensions@2025-04-01' = [for i in range(0, session_hosts_count): {
   name: '${vm[i].name}/domainjoin'
   location: location
   properties: (domain_type == 'EntraID') ?{
@@ -191,7 +191,7 @@ module hostpool 'avd_hostpool.bicep' = {
   }
 }
 
-resource avdagentsessionhosts 'Microsoft.Compute/virtualMachines/extensions@2024-07-01' = [for i in range(0, session_hosts_count): {
+resource avdagentsessionhosts 'Microsoft.Compute/virtualMachines/extensions@2025-04-01' = [for i in range(0, session_hosts_count): {
   name: '${vm[i].name}/AddSessionHost'
   location: location
   properties: {
@@ -213,7 +213,7 @@ resource avdagentsessionhosts 'Microsoft.Compute/virtualMachines/extensions@2024
   ]
 }]
 
-resource azureMonitorAgent 'Microsoft.Compute/virtualMachines/extensions@2024-11-01' = [for i in range(0, session_hosts_count): {
+resource azureMonitorAgent 'Microsoft.Compute/virtualMachines/extensions@2025-04-01' = [for i in range(0, session_hosts_count): {
   name: '${vm[i].name}/AzureMonitorWindowsAgent'
   location: location
   properties: {
@@ -228,7 +228,7 @@ resource azureMonitorAgent 'Microsoft.Compute/virtualMachines/extensions@2024-11
   ]
 }]
 
-resource dcrAssociation 'Microsoft.Insights/dataCollectionRuleAssociations@2023-03-11' = [for i in range(0, session_hosts_count): {
+resource dcrAssociation 'Microsoft.Insights/dataCollectionRuleAssociations@2024-03-11' = [for i in range(0, session_hosts_count): {
   name: 'dcr-${vm[i].name}'
   scope: vm[i]
   properties: {
