@@ -66,4 +66,3 @@ module key_vault 'key_vault.bicep' = if (create_key_vault) {
     tags: tags
   }
 }
-
