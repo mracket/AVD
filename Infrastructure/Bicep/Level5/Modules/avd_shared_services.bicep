@@ -29,8 +29,6 @@ param domain_type string = ''
 param domain_guid string = ''
 param domain_name string = ''
 
-param principalId string = 'bf92430d-f01e-46ea-8fef-092a87a81e97'
-
 resource workspace 'Microsoft.DesktopVirtualization/workspaces@2024-08-08-preview' = {
   name: 'vdws-${name}'
   location: location
@@ -45,75 +43,26 @@ resource workspace 'Microsoft.DesktopVirtualization/workspaces@2024-08-08-previe
   tags: tags
 }
 
-resource stg 'Microsoft.Storage/storageAccounts@2025-06-01' = {
-  name: 'sa${name}${uniqueString(resourceGroup().id)}'
-  location: location
-  kind: kind
-  properties: {
-    allowBlobPublicAccess: false  
-    minimumTlsVersion: 'TLS1_2'
-    supportsHttpsTrafficOnly: true
-    azureFilesIdentityBasedAuthentication: (domain_type == 'EntraID') ?{
-      activeDirectoryProperties: {
-        domainGuid: domain_guid
-        domainName: domain_name
-      }
-      directoryServiceOptions: 'AADKERB'
-      defaultSharePermission: 'StorageFileDataSmbShareContributor'
-    }: null
-  }  
-  sku: {
-    name: sku
-  }
-  tags: tags
-}
-resource file 'Microsoft.Storage/storageAccounts/fileServices@2025-06-01' = {
-  name: 'default'
-  parent: stg
-  properties: {
-    protocolSettings: {
-      smb: {}
-    }
+module storage_account 'avd_storage_account.bicep' = if (create_storage_account) {
+  name: 'storage_account'
+  params: {
+    fileshare_name: fileshare_name
+    kind: kind
+    location: location
+    name: name
+    tags: tags
+    sku: sku
+    domain_type: domain_type
+    domain_guid: domain_guid
+    domain_name: domain_name
   }
 }
 
-resource fileshare 'Microsoft.Storage/storageAccounts/fileServices/shares@2025-06-01' = {
-  name: fileshare_name
-  parent: file
-  properties: {
-    shareQuota: 100
+module key_vault 'key_vault.bicep' = if (create_key_vault) {
+  name: 'key_vault'
+  params: {
+    location: location
+    name: name
+    tags: tags
   }
 }
-
-resource kv 'Microsoft.KeyVault/vaults@2023-07-01' = if (create_key_vault) {
-  name: 'kv-${name}'
-  location: location
-  properties: {
-    sku: {
-      family: 'A'
-      name: 'standard'
-    }
-    tenantId: subscription().tenantId
-    enableRbacAuthorization: true
-    enabledForDeployment: true
-    enabledForDiskEncryption: true
-    enabledForTemplateDeployment: true
-  }
-  tags: tags
-}
-
-resource key_vault_administrator 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
-  scope: subscription()
-  name: 'bf92430d-f01e-46ea-8fef-092a87a81e97'
-}
-
-resource rbac 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(kv.id, principalId, key_vault_administrator.id)
-  properties: {
-    principalId: principalId
-    roleDefinitionId: '/providers/Microsoft.Authorization/roleDefinitions/00482a5a-887f-4fb3-b363-3b7fe8e74483'    
-  }
-  scope: kv
-}
-
-
